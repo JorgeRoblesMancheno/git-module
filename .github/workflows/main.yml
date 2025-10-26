@@ -1,0 +1,27 @@
+name: Detect Secrets
+
+on:
+  push:
+    branches:
+      - main
+      - '**'
+
+jobs:
+  detect-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install detect-secrets
+        run: pip install detect-secrets
+
+      - name: Scan repository for secrets
+        run: |
+          detect-secrets scan > .secrets.baseline
+          detect-secrets audit .secrets.baseline
